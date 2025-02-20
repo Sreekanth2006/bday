@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Birthday Calendar</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pacifico&family=Comic+Neue:wght@400;700&display=swap" rel="stylesheet">
+<style>
+  body {
+    font-family: 'Comic Neue', cursive;
+    margin: 0;
+    padding: 0;
+    background: linear-gradient(135deg, #ff9a9e, #fad0c4);
+    color: #333;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+  }
+  .container {
+    background: rgba(255, 255, 255, 0.8);
+    backdrop-filter: blur(12px);
+    border-radius: 16px;
+    padding: 30px;
+    width: 100%;
+    max-width: 800px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    overflow-y: auto;
+  }
+  h1 {
+    text-align: center;
+    font-size: 2.5rem;
+    margin-bottom: 20px;
+    color: #ff6f61;
+    font-family: 'Pacifico', cursive;
+    font-weight: 400;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  .layout {
+    display: flex;
+    flex-direction: column;
+    gap: 25px;
+  }
+  @media (min-width: 1024px) {
+    .layout {
+      flex-direction: row;
+      align-items: flex-start;
+    }
+    .calendar-section {
+      flex: 1;
+      max-width: 400px;
+    }
+    .upcoming-birthdays {
+      flex: 1;
+      max-width: 400px;
+      margin-left: 25px;
+    }
+  }
+  .calendar-section {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    padding: 20px;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+  .calendar-controls {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+  }
+  .calendar-controls button {
+    background: #ff6f61;
+    border: none;
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    transition: all 0.3s ease;
+  }
+  .calendar-controls button:hover {
+    background: #ff4a3d;
+    transform: translateY(-2px);
+  }
+  .calendar-controls h2 {
+    font-size: 1.2rem;
+    color: #333;
+    font-weight: 700;
+    margin: 0;
+  }
+  .calendar {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 8px;
+    padding: 10px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+  }
+  .calendar div {
+    padding: 10px;
+    text-align: center;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    background: rgba(255, 255, 255, 0.9);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-size: 0.9rem;
+    color: #333;
+  }
+  .calendar div:hover {
+    background: rgba(255, 111, 97, 0.2);
+    transform: translateY(-2px);
+  }
+  .calendar .today {
+    background: #ff6f61;
+    color: white;
+    font-weight: 700;
+  }
+  .calendar .selected {
+    background: #ff4a3d;
+    color: white;
+    font-weight: 700;
+  }
+  .calendar .empty {
+    background: transparent;
+    border: none;
+    cursor: default;
+  }
+  .upcoming-birthdays {
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 12px;
+    padding: 20px;
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.1);
+  }
+  .upcoming-birthdays h2 {
+    font-size: 1.2rem;
+    color: #ff6f61;
+    font-weight: 700;
+    margin-bottom: 15px;
+    text-align: center;
+  }
+  .upcoming-birthdays .birthday-item {
+    margin-bottom: 10px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+  }
+  .upcoming-birthdays .birthday-item:hover {
+    background: rgba(255, 111, 97, 0.2);
+    transform: translateY(-2px);
+  }
+  .upcoming-birthdays .birthday-item p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    color: #333;
+  }
+  .upcoming-birthdays .birthday-item p strong {
+    color: #ff6f61;
+  }
+  .wish {
+    font-size: 1.2rem;
+    color: #ff6f61;
+    text-align: center;
+    margin-top: 20px;
+    font-weight: 700;
+    display: none;
+  }
+  .result .birthday-item {
+    margin-bottom: 10px;
+    padding: 12px;
+    background: rgba(255, 255, 255, 0.9);
+    border-radius: 8px;
+    backdrop-filter: blur(5px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    transition: all 0.3s ease;
+}
+.result .birthday-item:hover {
+    background: rgba(255, 111, 97, 0.2);
+    transform: translateY(-2px);
+}
+.result .birthday-item p {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    color: #333;
+}
+.result .birthday-item p strong {
+    color: #ff6f61;
+}
+  @media (max-width: 768px) {
+    .container {
+      padding: 20px;
+    }
+    h1 {
+      font-size: 2rem;
+    }
+    .calendar-controls button {
+      padding: 6px 12px;
+      font-size: 0.8rem;
+    }
+    .calendar div {
+      padding: 8px;
+      font-size: 0.8rem;
+    }
+    .birthday-item {
+      padding: 12px;
+    }
+    .wish {
+      font-size: 1rem;
+    }
+  }
+</style>
+</head>
+<body>
+  <div class="container">
+    <h1>Birthday's Calendar</h1>
+    <div class="layout">
+      <div class="calendar-section">
+        <div class="calendar-controls">
+          <button onclick="previousMonth()">←</button>
+          <h2 id="currentMonthYear"></h2>
+          <button onclick="nextMonth()">→</button>
+        </div>
+        <div class="calendar" id="calendar"></div>
+        <div class="wish" id="wish"></div>
+        <div class="result" id="result"></div>
+      </div>
+      <div class="upcoming-birthdays">
+        <h2>Upcoming Birthdays (7 Days)</h2>
+        <div id="upcomingResult"></div>
+      </div>
+    </div>
+  </div>
+  <img src="https://bday.89determined.workers.dev/?input=today" style="display:none;">
+
+  <script>
+    const apiBaseUrl = 'https://localghost.pythonanywhere.com/';
+let currentDate = new Date();
+let selectedDay = null;
+function generateCalendar() {
+  const calendarDiv = document.getElementById('calendar');
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth();
+  const firstDay = new Date(year, month, 1);
+  const lastDay = new Date(year, month + 1, 0);
+  const daysInMonth = lastDay.getDate();
+  const startingDay = firstDay.getDay();
+  document.getElementById('currentMonthYear').textContent = `${currentDate.toLocaleString('default', { month: 'long' })} ${year}`;
+  calendarDiv.innerHTML = '';
+  for (let i = 0; i < startingDay; i++) {
+    const emptyDay = document.createElement('div');
+    emptyDay.classList.add('empty');
+    calendarDiv.appendChild(emptyDay);
+  }
+  for (let day = 1; day <= daysInMonth; day++) {
+    const dayDiv = document.createElement('div');
+    dayDiv.textContent = day;
+    dayDiv.addEventListener('click', () => {
+      selectedDay = day;
+      fetchBirthdaysForDate(day);
+      generateCalendar();
+    });
+    if (day === new Date().getDate() && month === new Date().getMonth() && year === new Date().getFullYear()) {
+      dayDiv.classList.add('today');
+    }
+    if (selectedDay === day) {
+      dayDiv.classList.add('selected');
+    }
+    calendarDiv.appendChild(dayDiv);
+  }
+}
+function previousMonth() {
+  currentDate.setMonth(currentDate.getMonth() - 1);
+  generateCalendar();
+}
+function nextMonth() {
+  currentDate.setMonth(currentDate.getMonth() + 1);
+  generateCalendar();
+}
+async function fetchTodaysBirthdays() {
+  try {
+    const response = await fetch(`${apiBaseUrl}/birthdays/today`);
+    const data = await response.json();
+    displayResult(data, 'result');
+    if (data.length > 0) {
+      document.getElementById('wish').innerHTML = `🎉 Happy Birthday ! 🎉`;
+      document.getElementById('wish').style.display = 'block';
+    } else {
+      document.getElementById('wish').style.display = 'none';
+    }
+  } catch (error) {
+    console.error('Error fetching today\'s birthdays:', error);
+  }
+}
+function extractDayMonth(dateString) {
+  const [day, month] = dateString.split('/');
+  return `${day}/${month}`;
+}
+async function fetchUpcomingBirthdays() {
+  try {
+    const response = await fetch(`${apiBaseUrl}/birthdays/upcoming`);
+    const data = await response.json();
+    displayUpcomingResult(data);
+  } catch (error) {
+    console.error('Error fetching upcoming birthdays:', error);
+  }
+}
+function displayUpcomingResult(data) {
+  const upcomingResultDiv = document.getElementById('upcomingResult');
+  if (data && data.length > 0) {
+    upcomingResultDiv.innerHTML = `
+      ${data.map(item => `
+        <div class="birthday-item">
+          <p>${extractDayMonth(item.dob)} - ${item.ht_no.startsWith('245324748') ? 'CSM' : 'CSE'}  </p>
+         <p> <strong>${item.name}</strong> </p>
+        </div>
+      `).join('')}
+    `;
+  } else {
+    upcomingResultDiv.innerHTML = '<p>No upcoming birthdays in the next 7 days.</p>';
+  }
+}
+window.onload = () => {
+  fetchUpcomingBirthdays();
+};
+async function fetchBirthdaysForDate(day) {
+  const year = currentDate.getFullYear();
+  const month = currentDate.getMonth() + 1;
+  const date = `${String(day).padStart(2, '0')}${String(month).padStart(2, '0')}`;
+  try {
+    const response = await fetch(`${apiBaseUrl}/birthdays/date/${date}`);
+    const data = await response.json();
+    displayResult(data, 'result');
+    if (day !== new Date().getDate() || month !== new Date().getMonth() + 1 || year !== new Date().getFullYear()) {
+      document.getElementById('wish').style.display = 'none';
+    }
+  } catch (error) {
+    console.error('Error fetching birthdays for date:', error);
+  }
+}
+function displayResult(data, elementId) {
+    const resultDiv = document.getElementById(elementId);
+    if (data && data.length > 0) {
+        resultDiv.innerHTML = `
+            ${data.map(item => `
+                <div class="birthday-item">
+                    <p><strong>${item.name}</strong></p>
+                    <p>${item.ht_no.startsWith('245324748') ? 'CSM' : 'CSE'}</p>
+                </div>
+            `).join('')}
+        `;
+    } else {
+        resultDiv.innerHTML = '<p>No birthdays found on selected day.</p>';
+    }
+}
+window.onload = () => {
+  generateCalendar();
+  fetchTodaysBirthdays();
+  fetchUpcomingBirthdays();
+};
+  </script>
+</body>
+</html>
